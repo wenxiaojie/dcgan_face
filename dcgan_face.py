@@ -290,6 +290,3 @@ plt.xlabel("iterations")
 plt.ylabel("Loss")
 plt.legend()
 plt.show()
-
-
-
