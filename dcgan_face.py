@@ -1,9 +1,7 @@
 from __future__ import print_function
 from glob import glob
-import os
 import random
 import torch.nn as nn
-import torch.backends.cudnn as cudnn
 import torch.optim as optim
 import torch.utils.data
 import torchvision.datasets as dset
@@ -11,7 +9,7 @@ import torchvision.transforms as transforms
 import torchvision.utils as vutils
 import matplotlib.pyplot as plt
 import helper
-cudnn.benchmark = True
+import os
 
 # Set random seed for reproducibility
 manualSeed = 999
@@ -38,7 +36,6 @@ params = {
     'ngpu': 1,  # Number of GPUs available. Use 0 for CPU mode.
     'save_epoch': 2}  # Save step.
 
-
 # We can use an image folder dataset the way we have it setup.
 # Create the dataset
 dataset = dset.ImageFolder(root=dataroot,
@@ -48,7 +45,6 @@ dataset = dset.ImageFolder(root=dataroot,
                                transforms.ToTensor(),
                                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
                            ]))
-
 # Create the dataloader
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=params['batch_size'],
                                          shuffle=True, num_workers=params['workers'])
@@ -79,6 +75,7 @@ def weights_init(m):
 class Generator(nn.Module):
     def __init__(self, params):
         super(Generator, self).__init__()
+        self.params = params
         self.main = nn.Sequential(
             # input is Z, going into a convolution
             nn.ConvTranspose2d(params['nz'], params['ngf'] * 8, 4, 1, 0, bias=False),
@@ -124,6 +121,7 @@ print(netG)
 class Discriminator(nn.Module):
     def __init__(self, params):
         super(Discriminator, self).__init__()
+        self.params = params
         self.main = nn.Sequential(
             # input is (nc) x 64 x 64
             nn.Conv2d(params['nc'], params['ndf'], 4, 2, 1, bias=False),
@@ -268,7 +266,7 @@ for epoch in range(params['num_epochs']):
                 'optimizerG': optimizerG.state_dict(),
                 'optimizerD': optimizerD.state_dict(),
                 'params': params
-            }, 'model_wxj/model_epoch_{}.pth'.format(epoch))
+            }, 'model_mjn/model_epoch_{}.pth'.format(epoch))
 
 # Save the final trained model.
 torch.save({
@@ -278,8 +276,7 @@ torch.save({
     'optimizerG': optimizerG.state_dict(),
     'optimizerD': optimizerD.state_dict(),
     'params': params
-}, 'model_wxj/model_final.pth')
-
+}, 'model_mjn/model_final.pth')
 
 plt.figure(figsize=(10, 5))
 plt.title("Generator and Discriminator Loss During Training")
