@@ -30,11 +30,11 @@ params = {
     'nz': 100,  # Size of the Z latent vector (the input to the generator).
     'ngf': 64,  # Size of feature maps in the generator. The depth will be multiples of this.
     'ndf': 64,  # Size of features maps in the discriminator. The depth will be multiples of this.
-    'num_epochs': 100,  # Number of training epochs.
+    'num_epochs': 250,  # Number of training epochs.
     'lr': 0.0002,  # Learning rate for optimizers
     'beta1': 0.5,  # Beta1 hyperparam for Adam optimizer
     'ngpu': 1,  # Number of GPUs available. Use 0 for CPU mode.
-    'save_epoch': 2}  # Save step.
+    'save_epoch': 5}  # Save step.
 
 # We can use an image folder dataset the way we have it setup.
 # Create the dataset
@@ -138,6 +138,7 @@ class Discriminator(nn.Module):
             nn.Conv2d(params['ndf'] * 4, params['ndf'] * 8, 4, 2, 1, bias=False),
             nn.BatchNorm2d(params['ndf'] * 8),
             nn.LeakyReLU(0.2, inplace=True),
+            nn.Dropout(p=0.5),
             # state size. (ndf*8) x 4 x 4
             nn.Conv2d(params['ndf'] * 8, 1, 4, 1, 0, bias=False),
             nn.Sigmoid()
@@ -262,21 +263,14 @@ for epoch in range(params['num_epochs']):
         if epoch % params['save_epoch'] == 0:
             torch.save({
                 'generator': netG.state_dict(),
-                'discriminator': netD.state_dict(),
-                'optimizerG': optimizerG.state_dict(),
-                'optimizerD': optimizerD.state_dict(),
                 'params': params
-            }, 'model_mjn/model_epoch_{}.pth'.format(epoch))
+            }, 'model_mina/model_epoch_{}.pth'.format(epoch))
 
 # Save the final trained model.
 torch.save({
-
     'generator': netG.state_dict(),
-    'discriminator': netD.state_dict(),
-    'optimizerG': optimizerG.state_dict(),
-    'optimizerD': optimizerD.state_dict(),
     'params': params
-}, 'model_mjn/model_final.pth')
+}, 'model_mina/model_final.pth')
 
 plt.figure(figsize=(10, 5))
 plt.title("Generator and Discriminator Loss During Training")
