@@ -5,7 +5,8 @@ import helper
 from dcgan_itself import Generator
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-load_path', default='model_wxj/model_epoch_2.pth', help='Checkpoint to load path from')
+parser.add_argument('-load_path', default='model_mina/model_epoch_45'
+                                          '.pth', help='Checkpoint to load path from')
 parser.add_argument('-num_output', default=9, help='Number of generated outputs')
 args = parser.parse_args()
 
@@ -44,4 +45,4 @@ for i in range(500):
 
     generated_img = generated_img.permute(0, 2, 3, 1)
     print(generated_img.shape)  # should be (9, width, height, 3)
-    output_fig(generated_img.cpu().detach().numpy(), file_name="images_jie_final_2/{}_image".format(str.zfill(str(i), 3)))
+    output_fig(generated_img.cpu().detach().numpy(), file_name="images_mina_45/{}_image".format(str.zfill(str(i), 3)))
